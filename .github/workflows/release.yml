@@ -1,0 +1,39 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+        
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ env.VERSION }}
+          files: .gitignore
+          body: |
+            Release version ${{ env.VERSION }}
+            
+            ## Installation
+            ```bash
+            # Download the file
+            curl -o ~/.config/.gitignore https://github.com/djazzcc/.gitignore/releases/download/v${{ env.VERSION }}/.gitignore
+            
+            # Configure git to use it globally
+            git config --global core.excludesfile ~/.config/.gitignore
+            ```
+            
+            For more details, please check the [README.md](https://github.com/djazzcc/.gitignore#readme)
+          draft: false
+          prerelease: false 
