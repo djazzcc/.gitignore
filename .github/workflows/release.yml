@@ -16,19 +16,22 @@ jobs:
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      
+      - name: Prepare release asset
+        run: cp .gitignore gitignore
         
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           name: Release ${{ env.VERSION }}
-          files: .gitignore
+          files: gitignore
           body: |
             Release version ${{ env.VERSION }}
             
             ## Installation
             ```bash
-            # Download the file
-            curl -o ~/.config/.gitignore https://github.com/djazzcc/.gitignore/releases/download/v${{ env.VERSION }}/.gitignore
+            # Download and rename the file
+            curl -o ~/.config/.gitignore https://github.com/djazzcc/.gitignore/releases/download/v${{ env.VERSION }}/gitignore
             
             # Configure git to use it globally
             git config --global core.excludesfile ~/.config/.gitignore
